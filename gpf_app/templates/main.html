@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="{{url_for('static',filename='jquery-3.3.1.min.js')}}"></script>
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script> -->
+</head>
+
+<body>
+    <button onclick="sendfile()" type='button' value="click me">click me</button>
+
+    <script>
+        function sendfile() {
+            $.ajax({
+                type: 'POST',
+                url: '/sendfile',
+                data: JSON.stringify({ 'TT11': 23.2 }),
+                contentType: 'application/json; charset=UTF-8',
+                dataType: 'json',
+                success: function (data) {
+                    console.log("hello");
+
+                },
+                error: function (data) {
+
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

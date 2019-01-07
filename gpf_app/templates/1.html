@@ -1,0 +1,2921 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>GPF web</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  
+    <link rel="stylesheet" href="../static/bootstrap.min.css">
+    
+    <script src="{{url_for('static',filename='jquery.slim.min.js')}}"></script>
+
+    <script src="{{url_for('static',filename='popper.min.js')}}"></script>
+ 
+    <script src="{{url_for('static',filename='bootstrap.min.js')}}"></script>
+
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static',filename='jquery.appendGrid-1.7.1.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static',filename='jquery-ui.structure.min.css')}}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{url_for('static',filename='jquery-ui.theme.min.css')}}"
+    />
+
+    <script
+      type="text/javascript"
+      src="{{url_for('static',filename='jquery-1.12.4.min.js')}}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{url_for('static',filename='jquery-ui-1.12.1.min.js')}}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{url_for('static',filename='jquery.appendGrid-1.7.1.js')}}"
+    ></script>
+    
+
+    
+    <script  
+      src="{{url_for('static',filename='higcharts.js')}}"
+    ></script>
+    <script     
+      src="{{url_for('static',filename='exporting.js')}}"
+    ></script>
+    <script     
+      src="{{url_for('static',filename='boost.js')}}"
+    ></script>
+    <script     
+      src="{{url_for('static',filename='boost-canvas.js')}}"
+    ></script>
+   
+    <script src="https://img.hcharts.cn/highcharts/modules/boost-canvas.js"></script> 
+    <script src="https://img.hcharts.cn/highcharts-plugins/highcharts-zh_CN.js"></script>
+
+    <script     
+      src="{{url_for('static',filename='FileSaver.min.js')}}"
+    ></script>
+    <!-- <script src="../static/iscroll.js"></script> -->
+
+  </head>
+  <style>
+
+  ul{
+    
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+  }
+   html body{
+     /* height: 969px;  */
+    }
+    .progress {
+      width: 200px;
+    }
+    #container {
+      margin-top: 5px;
+    }
+    #container .btn {
+      color: white;
+    }
+    .btn.btn-outline-primary {
+      margin: 0;
+    }
+    .chart {
+      min-width: 320px;
+      /* max-width: 1200px; */
+      height: 250px;
+      margin: 0 20px;
+    }
+    #tin_calibration {
+      display: none;
+    }
+    h2{
+      margin: 0;
+      padding: 5px 0;
+      
+      text-align: center;
+     
+    }
+    .col-3{
+      float: left;
+      background-color: #282D32;
+      /* height: 969px; */
+      /* overflow: auto; */
+    }
+    .lefttitle{
+      color: white;
+    }
+    
+    .col{
+      /* background-color: #30363E;   */
+      overflow: hidden;
+      padding-right:0; 
+      height: 100%
+      
+    }
+#wrapper{
+  height: 969px;
+  overflow: hidden;
+}
+    #wrapper ul{
+      height: 1750px;
+    
+    }
+    .col .coltitle{
+      margin: 0 -15px;
+      background-color: #eee;
+    }
+    .form-inline{
+    
+      margin-top: 5px;
+      width: 100%;
+    }
+    h6{
+      color: #6B8699
+    }
+    
+    .updataarea{
+      
+     margin-bottom: 20px;
+     margin: 0 -15px;
+     padding: 15px;
+     
+     color: #6B8699;
+ 
+    }
+    .updataarea form {
+      
+    }
+    #accordion{
+      margin: 0 -15px;
+    }
+    .card{
+      background-color: #30363E
+    }
+    /* .location{
+      
+      vertical-align: bottom;
+    } */
+
+    
+
+
+  #form{
+    display: none;
+  }
+  #ossfile b{
+    display: none;
+  }
+  .btn.btn-outline-primary.datstyle{
+    margin-right: 6px;
+  }
+  #selectPro{
+   margin:5px 0;
+  }
+   
+    
+  </style>
+  <body>
+    <div class="container-fluid ">
+      <div class="row">
+        <div class="col-3">
+            
+          
+            <ul>
+              <h2 class="lefttitle">标定数据</h2>
+          <div class="updataarea">
+            <form name="theform" id="form">
+              <input
+                type="radio"
+                name="myradio"
+                value="local_name"
+                checked="true"
+              />
+              上传文件名字保持本地文件名字&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <input type="radio" name="myradio" value="random_name" />
+              上传文件名字是随机文件名, 后缀保留
+            </form>
+
+            <!-- <h4>您所选择的文件列表：</h4>
+            <div id="ossfile"></div> -->
+            <!-- 文件操作按钮 -->
+            <!--
+              <label
+                class="ui teal circular icon button"
+                data-tooltip="Select measures"
+                data-position="right center"
+                for="inputGroupFile"
+              >
+            -->
+            <div id="container">
+              <!-- <a class="btn btn-primary btn-sm " id="selectfiles">选择文件</a> -->
+              <div style="margin-bottom: 5px">
+                  <form  method="post" enctype="multipart/form-data"  
+                  id="selectdat"
+                
+                 
+                  >
+                  <!-- target="iframe_display" -->
+                
+         
+              
+
+             <input type="button" id="i-check" 
+             value="select_DAT" class="btn btn-outline-primary  datstyle" onclick="$('#i-file').click();"
+             >
+              
+             <input type="file" id='i-file'  accept=".dat"  style="display: none" name="myfile">
+
+             <input id='location' class="form-control" disabled style="width: 50%;display: inline-block;  "  > 
+            <!-- </div> -->
+            <input 
+            type="button"
+            value="提交"
+            style="width:22%"
+            class="btn btn-outline-primary "
+            id="submitdat"
+            >
+       
+          </form>
+            
+              <!-- </label> -->
+
+              <!--
+                <label
+                  class="ui teal circular icon button"
+                  data-tooltip="Upload"
+                  data-position="right center"
+                  for="inputGroupFileBtn"
+                >
+              -->
+           
+<iframe id="iframe_display" name="iframe_display" style="display: none;"></iframe>
+              <form  method="post"
+             
+              id="selectPro"
+              enctype="multipart/form-data"
+              >
+              <input type="button" id="i-check" value="select_DCM" class="btn btn-outline-primary " onclick="$('#i-file-dcm').click();">
+               
+              <input type="file" id='i-file-dcm'  accept=".DCM"  style="display: none" name="myfile2" multiple="multiple">
+
+                 <input id='location2' class="form-control" disabled style="width: 50%;display: inline-block ;"> 
+            <!-- </label> -->
+            <input 
+            type="button"
+            value="提交"
+            style="width:22%"
+            class="btn btn-outline-primary "
+            id="submitdcm" ;
+           
+            >
+          </form>
+           
+          
+
+            <!-- <form
+              class="input-group"
+              method="post"
+              action="/api/upload"
+              enctype="multipart/form-data"
+            >
+              <input
+                type="file"
+                style="position:absolute;clip:rect(0 0 0 0);"
+                id="inputGroupFile"
+                name="myfile"
+                multiple="multiple"
+              />
+              <button
+                type="submit"
+                class="ui primary button"
+                id="inputGroupFileBtn"
+                style="position:absolute;clip:rect(0 0 0 0);"
+              ></button>
+            </form> -->
+            <input id="simulation"
+            type="button"
+            value="simulation"
+            style="width:22%"
+            class="btn btn-outline-primary ">
+
+
+            <input
+              id="create_DCM"
+              type="button"
+              value="create DCM"
+              style="width:22%"
+              class="btn btn-outline-primary "
+            />
+            <!-- <label
+              for="file"
+              class=" btn btn-outline-primary btn-sm"
+              style="width:22%"
+              >read_DCM</label
+            >
+            <input
+              id="file"
+              type="file"
+              style="display:none"
+              class=" read_DCM"
+              value="read DCM"
+            /> -->
+          </div>
+
+          <div>
+            <!-- 标定c数值 -->
+            <div>
+              <h6 style="float: left">PFltSig_vfEgPfilFildMinB1_C</h6>
+              <input
+                id="PFltSig_vfEgPfilFildMinB1_C"
+                placeholder="没有找到"
+                type="text"
+                value=""
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+
+            <div>
+              <h6 style="float: left">PFltSig_vfEgPfilFildMaxB1_C</h6>
+              <input
+                id="PFltSig_vfEgPfilFildMaxB1_C"
+                type="text"
+                placeholder="没有找到"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_tiNormMin_C</h6>
+              <input
+                id="PFltSig_tiNormMin_C"
+                type="text"
+                placeholder="20.0000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_dvfEgPfilFildMinB1_C</h6>
+              <input
+                id="PFltSig_dvfEgPfilFildMinB1_C"
+                type="text"
+                placeholder="20.0000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_dvfEgPfilFildMaxB1_C</h6>
+              <input
+                id="PFltSig_dvfEgPfilFildMaxB1_C"
+                type="text"
+                placeholder="120.0000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_dmSotOxdMax_C</h6>
+              <input
+                id="PFltSig_dmSotOxdMax_C"
+                type="text"
+                placeholder="500.0000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PPfilDif_ratPCorrlnThdDual_C</h6>
+              <input
+                id="PPfilDif_ratPCorrlnThdDual_C"
+                type="text"
+                placeholder="没有找到"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_ratPCorrlnMinDiag_C</h6>
+              <input
+                id="PFltSig_ratPCorrlnMinDiag_C"
+                type="text"
+                placeholder="0.3000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_numPCorrlnAvrgDiag_C</h6>
+              <input
+                id="PFltSig_numPCorrlnAvrgDiag_C"
+                type="text"
+                placeholder="3.0000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left">PFltSig_numPCorrlnAvrg_C</h6>
+              <input
+                id="PFltSig_numPCorrlnAvrg_C"
+                type="text"
+                placeholder="6.0000"
+                style="width:30%;float: right; "
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left;">PFltSig_facPDeltaPfilRefCorrB1_C</h6>
+              <input
+                id="PFltSig_facPDeltaPfilRefCorrB1_C"
+                type="text"
+                placeholder="0.0000"
+                style="width:30%;float: right;"
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left;">PFltSig_tiFilPDifB1_C</h6>
+              <input
+                id="PFltSig_tiFilPDifB1_C"
+                type="text"
+                placeholder="4.0000"
+                style="width:30%;float: right;"
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left;">PFltSig_tiFilVfB1_C</h6>
+              <input
+                id="PFltSig_tiFilVfB1_C"
+                type="text"
+                placeholder="4.0000"
+                style="width:30%;float: right;"
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left;">PFltSig_stRstCrssCorrlnB1_C</h6>
+              <input
+                id="PFltSig_stRstCrssCorrlnB1_C"
+                type="text"
+                placeholder="81.0000"
+                style="width:30%;float: right;"
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left;">tiEfcDurnMin_C</h6>
+              <input
+                id="tiEfcDurnMin_C"
+                type="text"
+                placeholder="15.0000"
+                style="width:30%;float: right;"
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+            <div>
+              <h6 style="float: left;">PFltSig_stHaltCrssCorrlnB1_C</h6>
+              <input
+                placeholder="46.0000"
+                id="PFltSig_stHaltCrssCorrlnB1_C"
+                placeholder="46.0000"
+                type="text"
+                style="width:30%;float: right;"
+                autocomplete="off"
+              />
+              <br />
+              <br />
+            </div>
+          </div>
+
+          <div>
+            <!-- 手风琴 -->
+            <div id="accordion">
+              <div class="card">
+                <div class="card-header">
+                  <a
+                    class="card-link"
+                    data-toggle="collapse"
+                    href="#collapseOne"
+                  >
+                    PFltSig_rFlowPfilRefB1_T
+                  </a>
+                </div>
+                <div
+                  id="collapseOne"
+                  class="collapse show"
+                  data-parent="#accordion"
+                >
+                  <div class="card-body">
+                    <div>
+                      <div style="float:left;">
+                        <form action="" method="post" id="appendGrid1">
+                          <table id="tblAppendGrid_c1"></table>
+                          <br />
+                          <button id="confirm_c1" type="button">confirm</button>
+                          <button id="init_c1" type="button">init</button>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <a
+                    class="collapsed card-link"
+                    data-toggle="collapse"
+                    href="#collapseTwo"
+                  >
+                    PFltSig_ratRFlowEgB1_T
+                  </a>
+                </div>
+                <div id="collapseTwo" class="collapse" data-parent="#accordion">
+                  <div class="card-body">
+                    <div class="card-body">
+                      <div>
+                        <div style="float:left;">
+                          <form action="" method="post" id="appendGrid2">
+                            <table id="tblAppendGrid_c2"></table>
+                            <br />
+                            <button id="confirm_c2" type="button">
+                              confirm
+                            </button>
+                            <button id="init_c2" type="button">init</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- <div class="card">
+                <div class="card-header">
+                  <a
+                    class="card-link"
+                    data-toggle="collapse"
+                    href="#collapseThree"
+                  >
+                    Curves
+                  </a>
+                </div>
+                <div
+                  id="collapseThree"
+                  class="collapse"
+                  data-parent="#accordion"
+                >
+                  <div class="card-body">
+                    <div class="card-body">
+                      <div>
+                        <div style="float:left;">
+                          <form action="" method="post" id="appendGrid3">
+                            <table id="tblAppendGrid_c3"></table>
+                            <br />
+                            <button id="confirm_c3" type="button">
+                              confirm
+                            </button>
+                            <button id="init_c3" type="button">init</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </ul>
+        
+        </div>
+
+        <div class="col">
+          <h2 class="coltitle">图表</h2>
+          <!-- <div class="dcmdata" >{{dcm_dicts}}</div> -->
+          <!-- <div class="dcmdata" style="display: none">{{dict2}}</div> -->
+          
+          <div>
+            <!-- 标定结果图 -->
+            <form class="form-inline">
+              
+              <span
+                >Select CCF
+                signals&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span
+              >
+              <select
+                class="form-control form-control-sm col-sm-2"
+                id="slector_signal"
+              >
+                <option selected="selected"
+                  >PFltSig_vfEgPfilCorrdFildB1</option
+                >
+                <option
+                  >PFltSig_data</option
+                >
+              </select>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              
+
+               
+              <input
+                id="yrange_min"
+                style="width:50px"
+              />&nbsp;&nbsp;&nbsp;~&nbsp;&nbsp;&nbsp;
+              <input id="yrange_max" style="width:50px" />
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <select
+                class="form-control form-control-sm col-sm-2"
+                id="slector_yrange"
+              >
+                <option selected="selected"
+                  >PFltSig_vfEgPfilCorrdFildB1</option
+                >
+                <option
+                  >PFltSig_pDeltaPfilDifRefB1</option
+                >
+                <option
+                  >PFltSig_pPfilDifRefB1</option
+                >
+                <option
+                  >PFltSig_pPfilDifFildB1</option
+                >
+                <option
+                  >PFltSig_pDeltaPfilDifFildB1</option
+                >
+                <option
+                  >PFltSig_ratPCorrlnSnsrHslnCnctnB1</option
+                >
+              </select>
+              <button id="yrange" type="button" class="btn btn-primary mb-8">
+                Y range
+              </button>
+            </div>
+            </form>
+            <div id="tin_calibration" style="height:700px;"></div>
+            <div id="tin_calibration2" style="height:700px;"></div>
+          
+          
+
+          <div>
+            <p>标定曲线图</p>
+            <!-- 标定曲线图 -->
+            <!--
+              <form class="form-inline">
+                <span>Select curves&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <select
+                  class="form-control form-control-sm col-sm-4"
+                  id="slector_curve"
+                >
+                  <option>PFltSig_rFlowPfilRefB1_T </option>
+                  <option>PFltSig_ratRFlowEgB1_T </option>
+                  <option selected="selected">Curves</option>
+                </select>
+              </form>
+            -->
+            <div
+              id="tin_curve"
+              
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <hr /> -->
+      <!-- <div class="row">
+        <div class="col-9"><h2>此处为合并</h2></div>
+      </div> -->
+    </div>
+
+    <!-- <script
+      type="text/javascript"
+      src="{{url_for('static',filename='plupload.full.min.js')}}"
+    ></script>
+    <script
+      type="text/javascript"
+      src="{{url_for('static',filename='upload.js')}}"
+    ></script> -->
+
+    <script type="text/javascript" src="../static/1.js"></script>
+    <!-- <script src="../static/methods.js"></script> -->
+    <!-- <script src="../static/table.js"></script> -->
+    <script src="../static/dataObj.js"></script>
+
+    <script>
+  //    var uploader = new plupload.Uploader({
+   
+  //  filters: {
+  //      mime_types : [ //只允许上传图片和zip文件
+  //      { title : "dat files", extensions : "dat" },
+  //      // { title : "Zip files", extensions : "zip" }
+  //      ], 
+  //      max_file_size : '100000mb', //最大只能上传400KB的文件
+  //      prevent_duplicates : true //不允许选取重复文件
+  //  }  })
+
+
+              $(function(){
+              console.log(Highcharts.charts)
+            // var a=Highcharts.charts[0]
+            // console.log(a);
+
+                $('#tin_curve').bind('mousemove touchmove touchstart', function(e) {
+            var chart, point, i, event
+            // console.log(Highcharts.charts)
+            for (i = 0; i < Highcharts.charts.length; i = i + 1) {
+              chart = Highcharts.charts[i]
+              event = chart.pointer.normalize(e.originalEvent) // Find coordinates within the chart
+              point = chart.series[0].searchPoint(event, true) // Get the hovered point
+              if (point) {
+                point.highlight(e)
+              }
+            }
+          })
+          /**
+           * 重写内部的方法， 这里是将提示框即十字准星的隐藏函数关闭
+           */
+          Highcharts.Pointer.prototype.reset = function() {
+            return undefined
+          }
+          /**
+           * 高亮当前的数据点，并设置鼠标滑动状态及绘制十字准星线
+           */
+          Highcharts.Point.prototype.highlight = function(event) {
+            this.onMouseOver() // 显示鼠标激活标识
+            this.series.chart.tooltip.refresh(this) // 显示提示框
+            this.series.chart.xAxis[0].drawCrosshair(event, this) // 显示十字准星线
+          }
+          /**
+           * 同步缩放效果，即当一个图表进行了缩放效果，其他图表也进行缩放
+           */
+          function syncExtremes(e) {
+
+
+            var thisChart = this.chart
+            if (e.trigger !== 'syncExtremes') {
+              Highcharts.each(Highcharts.charts, function(chart) {
+                if (chart !== thisChart) {
+                  if (chart.xAxis[0].setExtremes) {
+                    chart.xAxis[0].setExtremes(e.min, e.max, undefined, false, {
+                      trigger: 'syncExtremes'
+                    })
+                  }
+                }
+              })
+            }
+          }
+          var curve1 = [
+            {
+              //PFltSig_ratRFlowEgB1_T
+              name:"PFltSig_ratRFlowEgB1_T",
+              // name: '初始值',
+              lineWidth: 3,
+              color: 'rgba(223, 83, 83, .5)',
+              data: [
+                [-50.040000000000006, 0.817],
+                [85.66, 1.162],
+                [221.35999999999999, 1.473],
+                [357.15999999999997, 1.674],
+                [492.86, 1.731],
+                [628.5600000000001, 2.19],
+                [764.26, 2.548],
+                [900.0600000000001, 2.79],
+                [1035.76, 3.026],
+                [1171.46, 3.255],
+                [1307.26, 3.479]
+              ]
+            },
+            {
+              name: '标定值',
+              lineWidth: 3,
+              color: 'rgba(119, 152, 191, .5)',
+              data: [
+                [-50.040000000000006, 0.817],
+                [85.66, 1.162],
+                [221.35999999999999, 1.473],
+                [357.15999999999997, 1.674],
+                [492.86, 1.731],
+                [628.5600000000001, 2.19],
+                [764.26, 2.548],
+                [900.0600000000001, 2.79],
+                [1035.76, 3.026],
+                [1171.46, 3.255],
+                [1307.26, 3.479]
+              ]
+            }
+          ]
+          var curve2 = [
+            {
+              //"PFltSig_rFlowPfilRefB1_T"
+              name:"PFltSig_rFlowPfilRefB1_T",
+              // name: '初始值2',
+              color: 'rgba(223, 83, 83, .5)',
+              data: [
+                [-50.040000000000006, 0.0365],
+                [85.66, 0.03607],
+                [221.35999999999999, 0.035],
+                [357.15999999999997, 0.0329],
+                [492.86, 0.0313],
+                [628.5600000000001, 0.02856],
+                [764.26, 0.02682],
+                [900.0600000000001, 0.02629],
+                [1035.76, 0.02587],
+                [1171.46, 0.02546],
+                [1307.26, 0.02503]
+              ]
+            },
+            {
+              name: '标定值2',
+              color: 'rgba(119, 152, 191, .5)',
+              data: [
+                [-50.040000000000006, 0.0365],
+                [85.66, 0.03607],
+                [221.35999999999999, 0.035],
+                [357.15999999999997, 0.0329],
+                [492.86, 0.0313],
+                [628.5600000000001, 0.02856],
+                [764.26, 0.02682],
+                [900.0600000000001, 0.02629],
+                [1035.76, 0.02587],
+                [1171.46, 0.02546],
+                [1307.26, 0.02503]
+              ]
+            }
+          ]
+          var data3 = []
+      for (var i = 0; i < curve1[0].data.length; i++) {
+        data3.push([
+          curve1[0].data[i][0],
+          curve1[0].data[i][1] * curve2[0].data[i][1].toFixed(5)
+        ])
+      }
+      
+      // console.log(data3)
+          var curves = [
+            {
+              name: '标定值s',
+              color: 'rgba(223, 83, 83, .5)',
+              data:data3
+            },
+            {
+              // name: '初始值s',
+              name:"Curves",
+              color: 'rgba(119, 152, 191, .5)',
+              data: [
+                [-50.040000000000006, 0.0298205],
+                [85.66, 0.04191334],
+                [221.35999999999999, 0.051555],
+                [357.15999999999997, 0.0550746],
+                [492.86, 0.0541803],
+                [628.5600000000001, 0.0625464],
+                [764.26, 0.06833736],
+                [900.0600000000001, 0.0733491],
+                [1035.76, 0.07828262],
+                [1171.46, 0.0828723],
+                [1307.26, 0.08707937]
+              ]
+            }
+          ]
+          // curves
+          var curves2 = [
+            {
+              // name: '初始值',
+              name:"curves",
+              lineWidth: 3,
+              color: 'rgba(223, 83, 83, .5)',
+              data: curves[1]['data']
+            },
+            {
+              name: '标定值',
+              lineWidth: 3,
+              color: 'rgba(119, 152, 191, .5)',
+              data: curves[0]['data']
+            }
+          ]
+          //PFltSig_rFlowPfilRefB1_T
+          var rFlowPfilRefB1_T = [
+            {
+              // name: '初始值',
+              name:"PFltSig_rFlowPfilRefB1_T",
+              lineWidth: 3,
+              color: 'rgba(223, 83, 83, .5)',
+              data: curve1[1]['data']
+            },
+            {
+              name: '标定值',
+              lineWidth: 3,
+              color: 'rgba(119, 152, 191, .5)',
+              data: curve1[0]['data']
+            }
+          ]
+          // PFltSig_ratRFlowEgB1_T
+          var ratRFlowEgB1_T = [
+            {
+              // name: '初始值',
+              name:"PFltSig_ratRFlowEgB1_T",
+              lineWidth: 3,
+              color: 'rgba(223, 83, 83, .5)',
+              data: curve2[1]['data']
+            },
+            {
+              name: '标定值',
+              lineWidth: 3,
+              color: 'rgba(119, 152, 191, .5)',
+              data: curve2[0]['data']
+            }
+          ]
+
+          var calibrations = {
+            PFltSig_vfEgPfilFildMinB1_C: 100.0,
+            PFltSig_vfEgPfilFildMaxB1_C: 800.0,
+            PFltSig_tiNormMin_C: 20.0,
+            PFltSig_dvfEgPfilFildMinB1_C: 35.0,
+            PFltSig_dvfEgPfilFildMaxB1_C: 1000.0,
+            PFltSig_dmSotOxdMax_C: 32.0,
+            PPfilDif_ratPCorrlnThdDual_C: -0.5,
+            PFltSig_ratPCorrlnMinDiag_C: 0.3,
+            PFltSig_numPCorrlnAvrgDiag_C: 3.0,
+            PFltSig_numPCorrlnAvrg_C: 6.0,
+            PFltSig_facPDeltaPfilRefCorrB1_C: 21.0,
+            PFltSig_tiFilPDifB1_C: 4.0,
+            PFltSig_tiFilVfB1_C: 4.0,
+            PFltSig_stRstCrssCorrlnB1_C: 112.0,
+            tiEfcDurnMin_C: 20.0,
+            PFltSig_stHaltCrssCorrlnB1_C: 142.0,
+            PFltSig_rFlowPfilRefB1_T: {
+              retXData: [
+                -50.040000000000006,
+                85.66,
+                221.35999999999999,
+                357.15999999999997,
+                492.86,
+                628.5600000000001,
+                764.26,
+                900.0600000000001,
+                1035.76,
+                1171.46,
+                1307.26
+              ],
+              retZData: [
+                3.2767,
+                0.0784,
+                3.2767,
+                0.0784,
+                3.2767,
+                0.0,
+                3.2767,
+                3.2767,
+                0.0784,
+                3.2767,
+                0.0784
+              ]
+            },
+            PFltSig_ratRFlowEgB1_T: {
+              retXData: [
+                -50.040000000000006,
+                85.66,
+                221.35999999999999,
+                357.15999999999997,
+                492.86,
+                628.5600000000001,
+                764.26,
+                900.0600000000001,
+                1035.76,
+                1171.46,
+                1307.26
+              ],
+              retZData: [
+                0.817,
+                1.162,
+                1.473,
+                1.674,
+                1.731,
+                2.19,
+                2.548,
+                2.79,
+                3.026,
+                3.255,
+                3.479
+              ]
+            },
+            lost_signals: "['apple', 'banana']"
+          }
+
+          //Select CFF signals
+
+          //绘图
+
+        
+          var dataserious = [rFlowPfilRefB1_T, ratRFlowEgB1_T, curves2]
+          var dataset=['PFltSig_rFlowPfilRefB1_T','PFltSig_ratRFlowEgB1_T','Curves'];
+
+          for (var i = 0; i < dataserious.length; i++) {
+            console.log(dataserious[i])
+            console.log()
+            $('<div class="chart">')
+              .appendTo('#tin_curve')
+              .highcharts({
+                chart: {
+                  marginLeft: 40, // Keep all charts left aligned
+                  spacingTop: 20,
+                  spacingBottom: 20,
+                  zoomType: 'x'
+                },
+                boost: {
+
+        useGPUTranslations: true
+
+        },
+                title: {
+                  text: dataset[i],
+                  align: 'left',
+                  margin: 0,
+                  x: 30
+                },
+                credits: {
+                  enabled: false
+                },
+                legend: {
+                  enabled: false
+                },
+                xAxis: {
+
+                  crosshair: true,
+                  events: {
+                    setExtremes: syncExtremes
+                  },
+                  labels: {
+                    // format: '{value} km'
+                  }
+                },
+                yAxis: {
+                  title: {
+                    text: null
+                  }
+                },
+
+                series: dataserious[i]
+                // {
+                //   data: dataserious[i][data],
+
+                // }
+              })
+          }
+          // dataserious.forEach(x=>{
+          //   console.log(x);
+
+          //   })
+
+          // function syncExtremes(e) {
+          //   var thisChart = this.chart
+          //   // Highcharts.charts=Highcharts.charts.filter(function(item){
+          //   //   item.renderTo!=div.chart
+          //   // })
+          //   // console.log(Highcharts.charts);
+
+          //   if (e.trigger !== 'syncExtremes') {
+          //     Highcharts.each(Highcharts.charts, function(chart) {
+          //       if (chart !== thisChart) {
+          //         if (chart.xAxis[0].setExtremes) {
+          //           chart.xAxis[0].setExtremes(e.min, e.max, undefined, false, {
+          //             trigger: 'syncExtremes'
+          //           })
+          //         }
+          //       }
+          //     })
+          //   }
+          // }
+
+          //表格1
+
+          $('#tblAppendGrid_c1').appendGrid({
+            caption: 'curve1',
+            // captionTooltip
+            captionTooltip: {
+              items: 'td',
+              content: 'curve1',
+              show: {
+                effect: 'fold',
+                delay: 200
+              }
+            },
+            columns: [
+              {
+                name: 'x',
+                display: 'x'
+              },
+              {
+                name: 'y',
+                display: 'y'
+              }
+            ],
+            initData: [
+              {
+                x: '-50.040000000000006',
+                y: '0.817'
+              },
+              {
+                x: '85.66',
+                y: '1.162'
+              },
+              {
+                x: '221.359999999999',
+                y: '1.473'
+              },
+              {
+                x: '357.159999',
+                y: '1.674'
+              },
+              {
+                x: '492.86',
+                y: '1.731'
+              },
+              {
+                x: '628.56',
+                y: '2.19'
+              },
+              {
+                x: '764.26',
+                y: '2.548'
+              },
+              {
+                x: '900.06',
+                y: '2.79'
+              },
+              {
+                x: '1035.76',
+                y: '3.026'
+              },
+              {
+                x: '1171.46',
+                y: '3.255'
+              },
+              {
+                x: '1307.26',
+                y: '3.479'
+              }
+            ]
+          })
+          //把表格数据发给绘图变量
+
+          $('#confirm_c1')
+            .button()
+            .click(function() {
+              var chart = Highcharts.charts[0]
+              var chart2=Highcharts.charts[2]
+
+              var count = $('#tblAppendGrid_c1').appendGrid('getRowCount') //行数
+              console.log('count:' + count)
+              var data = $('#tblAppendGrid_c1').appendGrid('getAllValue')
+              console.log(data)
+              // var pushrow = [0, 0];
+              var datas = []
+              for (i = 0; i < count; i++) {
+                datas.push([parseFloat(data[i].x), parseFloat(data[i].y)])
+              }
+              console.log(datas)
+              curve1[0]['data'] = datas
+              console.log(curve1[0]['data'])
+              console.log(curve1[0])
+
+              chart.series[0].remove()
+              chart.series[0].remove()
+
+              //   curve1.shift()
+              //  curve1.shift()
+              // chart.redraw();
+              chart.addSeries({
+                // name: '初始值',
+                name:"PFltSig_rFlowPfilRefB1_T",
+                lineWidth: 3,
+                color: 'rgba(223, 83, 83, .5)',
+                data: datas
+              }) //将表格数据发送给绘图，并重新绘图！！！
+              chart.addSeries({
+                name: '标定值',
+                lineWidth: 3,
+                color: 'rgba(119, 152, 191, .5)',
+                data: curve1[0]['data']
+              })
+              chart.setTitle({
+                text: 'PFltSig_rFlowPfilRefB1_T'
+              })
+              chart.redraw()
+
+              chart2.series[0].remove()
+              chart2.series[0].remove()
+
+              //   curve1.shift()
+              //  curve1.shift()
+              // chart.redraw();
+              data3 = []
+      for (var i = 0; i < curve1[0].data.length; i++) {
+        data3.push([
+          curve1[0].data[i][0],
+          curve1[0].data[i][1] * curve2[0].data[i][1].toFixed(5)
+        ])
+      }
+      
+              chart2.addSeries({
+                // name: '初始值',
+                name:"Curves",
+                lineWidth: 3,
+                color: 'rgba(223, 83, 83, .5)',
+                data: data3
+              }) //将表格数据发送给绘图，并重新绘图！！！
+              chart2.addSeries({
+                name: '标定值',
+                lineWidth: 3,
+                color: 'rgba(119, 152, 191, .5)',
+                data: data3
+              })
+              chart2.setTitle({
+                text: 'Curves'
+              })
+              chart2.redraw()
+            })
+
+          //表格参数初始化
+          $('#init_c1')
+            .button()
+            .click(function() {
+              $('#tblAppendGrid_c1').appendGrid('load', [
+                {
+                  x: '-50.040000000000006',
+                  y: '0.817'
+                },
+                {
+                  x: '85.66',
+                  y: '1.162'
+                },
+                {
+                  x: '221.359999999999',
+                  y: '1.473'
+                },
+                {
+                  x: '357.159999',
+                  y: '1.674'
+                },
+                {
+                  x: '492.86',
+                  y: '1.731'
+                },
+                {
+                  x: '628.56',
+                  y: '2.19'
+                },
+                {
+                  x: '764.26',
+                  y: '2.548'
+                },
+                {
+                  x: '900.06',
+                  y: '2.79'
+                },
+                {
+                  x: '1035.76',
+                  y: '3.026'
+                },
+                {
+                  x: '1171.46',
+                  y: '3.255'
+                },
+                {
+                  x: '1307.26',
+                  y: '3.479'
+                }
+              ])
+              var data = $('#tblAppendGrid_c1').appendGrid('getAllValue', true)
+
+              var datas = []
+              for (i = 0; i < data['_RowCount']; i++) {
+                datas.push([parseFloat(data['x_' + i]), parseFloat(data['y_' + i])])
+              }
+              curve1[0]['data'] = datas
+              console.log(curve1[0]['data'])
+            })
+
+          //表格2
+
+          $('#tblAppendGrid_c2').appendGrid({
+            caption: 'curve2',
+            // captionTooltip
+            captionTooltip: {
+              items: 'td',
+              content: 'curve2',
+              show: {
+                effect: 'fold',
+                delay: 200
+              }
+            },
+            columns: [
+              {
+                name: 'x',
+                display: 'x'
+              },
+              {
+                name: 'y',
+                display: 'y'
+              }
+            ],
+            initData: [
+              {
+                x: '-50.040000000000006',
+                y: '0.03650'
+              },
+              {
+                x: '85.66',
+                y: '0.036070'
+              },
+              {
+                x: '221.359999999999',
+                y: '0.035000'
+              },
+              {
+                x: '357.159999',
+                y: '0.03290'
+              },
+              {
+                x: '492.86',
+                y: '0.031300'
+              },
+              {
+                x: '628.56',
+                y: '0.028560'
+              },
+              {
+                x: '764.26',
+                y: '0.02682'
+              },
+              {
+                x: '900.06',
+                y: '0.026290'
+              },
+              {
+                x: '1035.76',
+                y: '0.02587'
+              },
+              {
+                x: '1171.46',
+                y: '0.025460'
+              },
+              {
+                x: '1307.26',
+                y: '0.025030'
+              }
+            ]
+          })
+          //把表格数据发给绘图变量
+          $('#confirm_c2')
+            .button()
+            .click(function() {
+              var chart = Highcharts.charts[1]
+              var chart2 = Highcharts.charts[2]
+              var count = $('#tblAppendGrid_c2').appendGrid('getRowCount') //行数
+              console.log('count:' + count)
+              var data = $('#tblAppendGrid_c2').appendGrid('getAllValue')
+              console.log(data)
+              // var pushrow = [0, 0];
+              var datas = []
+              for (i = 0; i < count; i++) {
+                datas.push([parseFloat(data[i].x), parseFloat(data[i].y)])
+              }
+              console.log(datas)
+              curve2[0]['data'] = datas
+              console.log(curve2[0]['data'])
+              chart.series[0].remove()
+              chart.series[0].remove()
+
+              // chart.redraw();
+              chart.addSeries({
+                // name: '初始值',
+                name:"PFltSig_ratRFlowEgB1_T",
+                lineWidth: 3,
+                color: 'rgba(223, 83, 83, .5)',
+                data: datas
+              }) //将表格数据发送给绘图，并重新绘图！！！
+              chart.addSeries({
+                name: '标定值',
+                lineWidth: 3,
+                color: 'rgba(119, 152, 191, .5)',
+                data: curve2[0]['data']
+              })
+              chart.setTitle({
+                text: 'PFltSig_ratRFlowEgB1_T'
+              })
+              chart.redraw()
+
+                chart2.series[0].remove()
+              chart2.series[0].remove()
+
+              //   curve1.shift()
+              //  curve1.shift()
+              // chart.redraw();
+              data3 = []
+      for (var i = 0; i < curve1[0].data.length; i++) {
+        data3.push([
+          curve1[0].data[i][0],
+          curve1[0].data[i][1] * curve2[0].data[i][1].toFixed(5)
+        ])
+      }
+      
+              chart2.addSeries({
+                // name: '初始值',
+                name:"Curves",
+                lineWidth: 3,
+                color: 'rgba(223, 83, 83, .5)',
+                data: data3
+              }) //将表格数据发送给绘图，并重新绘图！！！
+              chart2.addSeries({
+                name: '标定值',
+                lineWidth: 3,
+                color: 'rgba(119, 152, 191, .5)',
+                data: data3
+              })
+              chart2.setTitle({
+                text: 'Curves'
+              })
+              chart2.redraw()
+            })
+          //表格参数初始化
+          $('#init_c2')
+            .button()
+            .click(function() {
+              $('#tblAppendGrid_c2').appendGrid('load', [
+                {
+                  x: '-50.040000000000006',
+                  y: '0.03650'
+                },
+                {
+                  x: '85.66',
+                  y: '0.036070'
+                },
+                {
+                  x: '221.359999999999',
+                  y: '0.035000'
+                },
+                {
+                  x: '357.159999',
+                  y: '0.03290'
+                },
+                {
+                  x: '492.86',
+                  y: '0.031300'
+                },
+                {
+                  x: '628.56',
+                  y: '0.028560'
+                },
+                {
+                  x: '764.26',
+                  y: '0.02682'
+                },
+                {
+                  x: '900.06',
+                  y: '0.026290'
+                },
+                {
+                  x: '1035.76',
+                  y: '0.02587'
+                },
+                {
+                  x: '1171.46',
+                  y: '0.025460'
+                },
+                {
+                  x: '1307.26',
+                  y: '0.025030'
+                }
+              ])
+             
+              var data = $('#tblAppendGrid_c2').appendGrid('getAllValue', true)
+
+              var datas = []
+              for (i = 0; i < data['_RowCount']; i++) {
+                datas.push([parseFloat(data['x_' + i]), parseFloat(data['y_' + i])])
+              }
+              curve2[0]['data'] = datas
+            })
+
+        
+
+          //标定曲线选择
+          // $('#slector_curve').change(function() {
+          //   var selectedItem = $('#slector_curve').val()
+          //   if (selectedItem == 'PFltSig_rFlowPfilRefB1_T') {
+          //     chart.series[0].remove()
+          //     chart.series[0].remove()
+          //     chart.addSeries({
+                // name: '初始值',
+          //       lineWidth: 3,
+          //       color: 'rgba(223, 83, 83, .5)',
+          //       data: curve1[1]['data']
+          //     }) //将表格数据发送给绘图，并重新绘图！！！
+          //     chart.addSeries({
+          //       name: '标定值',
+          //       lineWidth: 3,
+          //       color: 'rgba(119, 152, 191, .5)',
+          //       data: curve1[0]['data']
+          //     })
+          //     chart.setTitle({
+          //       text: 'PFltSig_rFlowPfilRefB1_T'
+          //     })
+          //     chart.redraw()
+          //   }
+          //   if (selectedItem == 'PFltSig_ratRFlowEgB1_T') {
+          //     chart.series[0].remove()
+          //     chart.series[0].remove()
+          //     chart.addSeries({
+          //       name: '初始值',
+          //       lineWidth: 3,
+          //       color: 'rgba(223, 83, 83, .5)',
+          //       data: curve2[1]['data']
+          //     }) //将表格数据发送给绘图，并重新绘图！！！
+          //     chart.addSeries({
+          //       name: '标定值',
+          //       lineWidth: 3,
+          //       color: 'rgba(119, 152, 191, .5)',
+          //       data: curve2[0]['data']
+          //     })
+          //     chart.setTitle({
+          //       text: 'PFltSig_ratRFlowEgB1_T'
+          //     })
+          //     chart.redraw()
+          //   }
+            // if (selectedItem == 'Curves') {
+            //   chart.series[0].remove()
+            //   chart.series[0].remove()
+            //   chart.addSeries({
+            //     name: '初始值',
+            //     lineWidth: 3,
+            //     color: 'rgba(223, 83, 83, .5)',
+            //     data: curves[1]['data']
+            //   }) //将表格数据发送给绘图，并重新绘图！！！
+            //   chart.addSeries({
+            //     name: '标定值',
+            //     lineWidth: 3,
+            //     color: 'rgba(119, 152, 191, .5)',
+            //     data: curves[0]['data']
+            //   })
+            //   chart.setTitle({
+            //     text: 'Curves'
+            //   })
+            //   chart.redraw()
+            // }
+          // })
+
+          //标定结果选择
+
+
+
+
+
+          // var calibration_data
+
+          //保存DCM
+    
+
+          if ($('.progress-bar').length>0) {
+            console.log('disabled')
+            $('#selectfiles').addClass('disabled')
+          }
+
+          //上传时禁止a
+       
+          // createDCM
+
+          $('#create_DCM').click(function() {
+            $('#create_DCM').attr("disabled","disabled");
+            setTimeout(() => {
+              $('#create_DCM').attr("disabled",false);
+            }, 2000);
+            var array = $('#appendGrid1').serializeArray()
+            var array2 = $('#appendGrid2').serializeArray()
+            var target = 'UAES-NE2/GPFtoolbox/1.dat'
+            var appendGrid1X = []
+            var appendGrid1Y = []
+            var appendGrid2X = []
+            var appendGrid2Y = []
+
+            for (var i = 0; i < array.length; i++) {
+              if (i % 2 == 0) {
+                appendGrid1X.push(array[i].value)
+              } else {
+                appendGrid1Y.push(array[i].value)
+              }
+            }
+            appendGrid1X.pop()
+            // console.log(appendGrid1X)
+            // console.log(appendGrid1Y)
+            //表格2
+            for (var i = 0; i < array2.length; i++) {
+              if (i % 2 == 0) {
+                appendGrid2X.push(array2[i].value)
+              } else {
+                appendGrid2Y.push(array2[i].value)
+              }
+            }
+            appendGrid2X.pop()
+            // console.log(appendGrid2X)
+            // console.log(appendGrid2Y)
+
+            var calibrations = {
+              PFltSig_vfEgPfilFildMinB1_C: $('#PFltSig_vfEgPfilFildMinB1_C').val(),
+              PFltSig_vfEgPfilFildMaxB1_C: $('#PFltSig_vfEgPfilFildMaxB1_C').val(),
+              PFltSig_tiNormMin_C: $('#PFltSig_tiNormMin_C').val(),
+              PFltSig_dvfEgPfilFildMinB1_C: $('#PFltSig_dvfEgPfilFildMinB1_C').val(),
+              PFltSig_dvfEgPfilFildMaxB1_C: $('#PFltSig_dvfEgPfilFildMaxB1_C').val(),
+              PFltSig_dmSotOxdMax_C: $('#PFltSig_dvfEgPfilFildMaxB1_C').val(),
+              PPfilDif_ratPCorrlnThdDual_C: $('#PPfilDif_ratPCorrlnThdDual_C').val(),
+              PFltSig_ratPCorrlnMinDiag_C: $('#PFltSig_ratPCorrlnMinDiag_C').val(),
+              PFltSig_numPCorrlnAvrgDiag_C: $('#PFltSig_numPCorrlnAvrgDiag_C').val(),
+              PFltSig_numPCorrlnAvrg_C: $('#PFltSig_numPCorrlnAvrg_C').val(),
+              PFltSig_facPDeltaPfilRefCorrB1_C: $(
+                '#PFltSig_facPDeltaPfilRefCorrB1_C'
+              ).val(),
+              PFltSig_tiFilPDifB1_C: $('#PFltSig_tiFilPDifB1_C').val(),
+              PFltSig_tiFilVfB1_C: $('#PFltSig_tiFilVfB1_C').val(),
+              PFltSig_stRstCrssCorrlnB1_C: $('#PFltSig_stRstCrssCorrlnB1_C').val(),
+              'PFltSig_StMacPBasdB1.tiEfcDurnMin_C': $('#tiEfcDurnMin_C').val(),
+              PFltSig_stHaltCrssCorrlnB1_C: $('#PFltSig_stHaltCrssCorrlnB1_C').val(),
+              PFltSig_rFlowPfilRefB1_T: {
+                retXData: appendGrid1X,
+                retZData: appendGrid1Y
+              },
+              PFltSig_ratRFlowEgB1_T: {
+                retXData: appendGrid2X,
+                retZData: appendGrid2Y
+              }
+            }
+            var test_dcm_title = 'KONSERVIERUNG_FORMAT 2.0\n'
+            var FESTWERT = 'FESTWERT '
+            var funktionen =
+              "FUNKTIONEN\nFKT PFltSig_PCorrln 'U100.11.1' 'U100.11.1 Cross-correlation estimation of referenced and measured differential pressure gradients over GPF for pressure-based GPF-diagnosis' \nEND\n\n"
+            var dcm_content = test_dcm_title + funktionen
+
+            var c4 = [
+              'PFltSig_stHaltCrssCorrlnB1_C',
+              'tiEfcDurnMin_C',
+              'PFltSig_stRstCrssCorrlnB1_C'
+            ]
+            var t4 = []
+            var PFltSig_Coorr = creat_dcm(dcm_content, c4, t4, calibrations)
+            console.log(PFltSig_Coorr)
+            c3 = ['PFltSig_tiFilPDifB1_C', 'PFltSig_tiFilVfB1_C']
+            t3 = ['PFltSig_ratRFlowEgB1_T']
+            var PFltSig_PCdng = creat_dcm(dcm_content, c3, t3, calibrations)
+            console.log(PFltSig_PCdng)
+            c2 = [
+              'PFltSig_facPDeltaPfilRefCorrB1_C',
+              'PFltSig_numPCorrlnAvrg_C',
+              'PFltSig_numPCorrlnAvrgDiag_C',
+              'PFltSig_ratPCorrlnMinDiag_C',
+              'PPfilDif_ratPCorrlnThdDual_C'
+            ]
+            t2 = ['PFltSig_rFlowPfilRefB1_T']
+            var PFltSig_PCorrln = creat_dcm(dcm_content, c2, t2, calibrations)
+            console.log(PFltSig_PCorrln)
+
+            c1 = [
+              'PFltSig_dmSotOxdMax_C',
+              'PFltSig_dvfEgPfilFildMaxB1_C',
+              'PFltSig_dvfEgPfilFildMinB1_C',
+              'PFltSig_tiNormMin_C',
+              'PFltSig_vfEgPfilFildMaxB1_C',
+              'PFltSig_vfEgPfilFildMinB1_C'
+            ]
+            t1 = []
+            var PFltSig_PCorrln2 = creat_dcm(dcm_content, c1, t1, calibrations)
+            console.log(PFltSig_PCorrln2)
+            // console.log(Coorr_p[1])
+            function creat_dcm(dcm_content, c, t, calibrations) {
+              txt = dcm_content
+              for (i = 0; i < c.length; i++) {
+                txt = txt + create_c(c[i], calibrations[c[i]])
+              }
+              for (i = 0; i < t.length; i++) {
+                txt = txt + create_t(t[i], calibrations[t])
+              }
+              return txt
+            }
+
+            function create_c(name, value) {
+              var myDate = new Date()
+              var mytime = myDate.getTime() //获取当前时间
+              var txt = 'FESTWERT '
+              txt =
+                txt +
+                name +
+                '\n' +
+                '    LANGNAME   ' +
+                myDate.getTime() +
+                '\n' +
+                '    FUNKTION \n ' +
+                "    EINHEIT_W '-'\n" +
+                '    WERT ' +
+                value +
+                '\n' +
+                'END' +
+                '\n\n'
+              return txt
+            }
+
+            function create_t(name, value) {
+              var myDate = new Date()
+              var mytime = myDate.getTime() //获取当前时间
+              var txt = 'KENNLINIE  '
+              txt =
+                txt +
+                name +
+                '\n' +
+                '    LANGNAME   ' +
+                myDate.getTime() +
+                '\n' +
+                '    FUNKTION \n '
+              var x = '   ST/X    '
+              for (i = 0; i < 6; i++) {
+                x = x + value['retXData'][i] + '   '
+              }
+              x = x + '\n    ST/X    '
+              for (i = 6; i < 11; i++) {
+                x = x + value['retXData'][i] + '   '
+              }
+              x = x + '\n'
+              txt = txt + x
+
+              x = '    WERT   '
+              for (i = 0; i < 6; i++) {
+                x = x + value['retZData'][i] + '   '
+              }
+              x = x + '\n    WERT   '
+              for (i = 6; i < 11; i++) {
+                x = x + value['retZData'][i] + '   '
+              }
+              x = x + '\n'
+              txt = txt + x
+              txt = txt + 'END\n\n'
+              return txt
+            }
+            // var DCMData =
+            //   PFltSig_Coorr + PFltSig_PCdng + PFltSig_PCorrln + PFltSig_PCorrln2
+            var blob1 = new Blob([PFltSig_Coorr], {
+              type: 'text/plain;charset=utf-8'
+            })
+            var d = new Date()
+            var n = d.getTime()
+            var name1 = n + Math.ceil(Math.random() * 1000) + '.DCM'
+            var name2 = n + Math.ceil(Math.random() * 1000) + '.DCM'
+            var name3 = n + Math.ceil(Math.random() * 1000) + '.DCM'
+            var name4 = n + Math.ceil(Math.random() * 1000) + '.DCM'
+
+            saveAs(blob1, name1)
+            
+            var blob2 = new Blob([PFltSig_PCdng], {
+              type: 'text/plain;charset=utf-8'
+            })
+            saveAs(blob2, name2)
+            //
+            var blob3 = new Blob([PFltSig_PCorrln], {
+              type: 'text/plain;charset=utf-8'
+            })
+            saveAs(blob3, name3)
+            //
+            var blob4 = new Blob([PFltSig_PCorrln2], {
+              type: 'text/plain;charset=utf-8'
+            })
+
+            saveAs(blob4, name4)
+            
+          })
+
+  
+              })
+              $(function(){
+                Highcharts.charts=Highcharts.charts.slice(0);
+            console.log(Highcharts.charts);
+  var charts;
+  var charts2;
+
+                // var charts
+
+                
+                console.log(Highcharts.charts);
+                
+
+                charts = Highcharts.chart('tin_calibration', {
+                  chart: {
+                    zoomType: 'x',
+                    panning: true,
+			              panKey: 'shift'
+                
+                  },
+                  boost: {
+                    useGPUTranslations: true
+                  },
+                  title: {
+                    text: 'Select CCF signals图表'
+                  },
+                  credits: {
+                  enabled: false
+                },
+                  // subtitle: {
+                  //   text: '数据来源: WorldClimate.com'
+                  // },
+                  xAxis: [
+                    {
+
+                  
+                      crosshair: true
+                    }
+                  ],
+
+                  yAxis: [
+                    {
+                      // Primary yAxis
+                      // gridLineWidth: 0,
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[0]
+                        }
+                      },
+                      title: {
+                        text: 'PFltSig_pDeltaPfilDifRefB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[0]
+                        }
+                      },
+                      opposite: true
+                    },
+                    {
+                      // Secondary yAxis
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_pPfilDifRefB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[1]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[1]
+                        }
+                      },
+                      opposite: true
+                    },
+
+                    {
+                      // Tertiary yAxis
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_pPfilDifFildB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[2]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[2]
+                        }
+                      },
+                      opposite: true
+                    },
+                    {
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_pDeltaPfilDifFildB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[3]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[3]
+                        }
+                      },
+                      // opposite: true
+                    },
+                    {
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_ratPCorrlnSnsrHslnCnctnB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[4]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[4]
+                        }
+                      },
+                      // opposite: true
+                    }
+                  ],
+
+                  tooltip: {
+                    shared: true
+                  },
+                  legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    x: 150,
+                    verticalAlign: 'top',
+                    y: 0,
+                    floating: true,
+                    backgroundColor:
+                      (Highcharts.theme && Highcharts.theme.legendBackgroundColor) ||
+                      '#FFFFFF'
+                  },
+                  series: [
+                    {
+                      id:'PFltSig_pDeltaPfilDifRefB1',
+                      name: 'PFltSig_pDeltaPfilDifRefB1',
+                      // type: 'spline',
+                      yAxis: 0,
+                      data:{},
+                      
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      },
+                      pointStart: 1
+                    },
+                    {
+                      id:'PFltSig_pPfilDifRefB1',
+                      name: 'PFltSig_pPfilDifRefB1',
+                      // type: 'line',
+                      yAxis: 1,
+                      data:{},
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    },
+                    {
+                      id:'PFltSig_pPfilDifFildB1',
+                      name: 'PFltSig_pPfilDifFildB1',
+                      // type: 'spline',
+                      yAxis: 2,
+                      data:{},
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    },
+                    {
+                      id:'PFltSig_pDeltaPfilDifFildB1',
+                      name: 'PFltSig_pDeltaPfilDifFildB1',
+                      // type: 'spline',
+                      yAxis: 3,
+                      data: {},
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    },
+                    {
+                      id:'PFltSig_ratPCorrlnSnsrHslnCnctnB1',
+                      name: 'PFltSig_ratPCorrlnSnsrHslnCnctnB1',
+                      // type: 'spline',
+                      yAxis: 4,
+                      data:{},
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    }
+                  ]
+                })
+
+                charts2 = Highcharts.chart('tin_calibration2', {
+                  chart: {
+                    zoomType: 'x',
+                    panning: true,
+			              panKey: 'shift'
+             
+                  },
+                  boost: {
+                    useGPUTranslations: true
+                  },
+                  title: {
+                    text: 'PFltSig_vfEgPfilCorrdFildB1'
+                  },
+                  credits: {
+                  enabled: false
+                },
+                  subtitle: {
+                    text: 'PFltSig_vfEgPfilCorrdFildB1'
+                  },
+
+
+                  yAxis: [{
+                    title: {
+                      text: 'PFltSig_vfEgPfilCorrdFildB1'
+                    }
+                  }],
+                  legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    floating: true
+
+                  },
+                  plotOptions: {
+                    series: {
+                      label: {
+                        connectorAllowed: false
+                      },
+                      pointStart: 1
+                    }
+                  },
+                  tooltip: {
+                    // valueSuffix: ' km'
+      },
+                  series: [
+                    {
+                      id:'PFltSig_vfEgPfilCorrdFildB1',
+                      name: 'PFltSig_vfEgPfilCorrdFildB1',
+                      data:{},
+                      pointStart: 1
+                    }
+                  ],
+                  responsive: {
+                    rules: [
+                      {
+                        condition: {
+                          maxWidth: 500
+                        },
+                        chartOptions: {
+                          legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                          }
+                        }
+                      }
+                    ]
+                  }
+                })
+            
+             var yrangeData=5;
+             console.log(charts);
+             console.log(charts2);
+
+                $('#simulation').click(function() {
+                  
+                  $('#simulation').attr("disabled","disabled");
+                  $('#simulation').val("loading...");
+                  
+            
+
+            var array = $('#appendGrid1').serializeArray()
+            var array2 = $('#appendGrid2').serializeArray()
+       
+            
+            console.log(array2)
+            // var target = 'UAES-NE2/GPFtoolbox/1.dat'
+            var appendGrid1X = []
+            var appendGrid1Y = []
+            var appendGrid2X = []
+            var appendGrid2Y = []
+
+            for (var i = 0; i < array.length; i++) {
+              if (i % 2 == 0) {
+                appendGrid1X.push(array[i].value)
+              } else {
+                appendGrid1Y.push(array[i].value)
+              }
+            }
+            appendGrid1X.pop()
+            console.log(appendGrid1X)
+            console.log(appendGrid1Y)
+            //表格2
+            for (var i = 0; i < array2.length; i++) {
+              if (i % 2 == 0) {
+                appendGrid2X.push(array2[i].value)
+              } else {
+                appendGrid2Y.push(array2[i].value)
+              }
+            }
+            appendGrid2X.pop()
+            console.log(appendGrid2X)
+            console.log(appendGrid2Y)
+
+            calibrations = {
+              PFltSig_vfEgPfilFildMinB1_C: $('#PFltSig_vfEgPfilFildMinB1_C').val(),
+              PFltSig_vfEgPfilFildMaxB1_C: $('#PFltSig_vfEgPfilFildMaxB1_C').val(),
+              PFltSig_tiNormMin_C: $('#PFltSig_tiNormMin_C').val(),
+              PFltSig_dvfEgPfilFildMinB1_C: $('#PFltSig_dvfEgPfilFildMinB1_C').val(),
+              PFltSig_dvfEgPfilFildMaxB1_C: $('#PFltSig_dvfEgPfilFildMaxB1_C').val(),
+              PFltSig_dmSotOxdMax_C: $('#PFltSig_dvfEgPfilFildMaxB1_C').val(),
+              PPfilDif_ratPCorrlnThdDual_C: $('#PPfilDif_ratPCorrlnThdDual_C').val(),
+              PFltSig_ratPCorrlnMinDiag_C: $('#PFltSig_ratPCorrlnMinDiag_C').val(),
+              PFltSig_numPCorrlnAvrgDiag_C: $('#PFltSig_numPCorrlnAvrgDiag_C').val(),
+              PFltSig_numPCorrlnAvrg_C: $('#PFltSig_numPCorrlnAvrg_C').val(),
+              PFltSig_facPDeltaPfilRefCorrB1_C: $(
+                '#PFltSig_facPDeltaPfilRefCorrB1_C'
+              ).val(),
+              PFltSig_tiFilPDifB1_C: $('#PFltSig_tiFilPDifB1_C').val(),
+              PFltSig_tiFilVfB1_C: $('#PFltSig_tiFilVfB1_C').val(),
+              PFltSig_stRstCrssCorrlnB1_C: $('#PFltSig_stRstCrssCorrlnB1_C').val(),
+              'PFltSig_StMacPBasdB1.tiEfcDurnMin_C': $('#tiEfcDurnMin_C').val(),
+              PFltSig_stHaltCrssCorrlnB1_C: $('#PFltSig_stHaltCrssCorrlnB1_C').val(),
+              PFltSig_rFlowPfilRefB1_T: {
+                retXData: appendGrid1X,
+                retZData: appendGrid1Y
+              },
+              PFltSig_ratRFlowEgB1_T: {
+                retXData: appendGrid2X,
+                retZData: appendGrid2Y
+              }
+            }
+
+            console.log(calibrations)
+            // console.log(target)
+            // setTimeout(() => {
+
+            // }, timeout);
+            // $.ajax({
+            //   type: 'POST',
+            //   url:
+            //     'http://139.224.5.105:30002/uaes-intelligent-calibration/v1/wc/gpf/analysisGPFToolBox',
+            //   data: {
+            //     jsonStr: JSON.stringify(calibrations),
+            //     fileUrl: target
+            //   },
+            //   dataType: 'json',
+            //   success: function(data) {
+            //     console.log(calibrations)
+            //     console.log(data)
+            //   }
+            // })
+            // Highcharts.charts
+              
+        
+              var simulationRequest= $.ajax({                
+              type: 'POST',                
+              url: '/upload/simulation', 
+              data: 
+                 JSON.stringify(calibrations),
+                
+              
+                        
+              dataType: 'json',
+              timeout:45000,                
+              success: function (data) {
+             
+                if(data){
+                  //  var series = chart.series[0];
+                  setTimeout(() => {
+                   
+                   dataObj=data;
+                   charts = Highcharts.chart('tin_calibration', {
+                  chart: {
+                    zoomType: 'x',
+                    panning: true,
+			              panKey: 'shift'
+                
+                  },
+                  boost: {
+                    useGPUTranslations: true
+                  },
+                  title: {
+                    text: 'Select CCF signals图表'
+                  },
+                  credits: {
+                  enabled: false
+                },
+                  // subtitle: {
+                  //   text: '数据来源: WorldClimate.com'
+                  // },
+                  xAxis: [
+                    {
+
+                  
+                      crosshair: true
+                    }
+                  ],
+
+                  yAxis: [
+                    {
+                      // Primary yAxis
+                      // gridLineWidth: 0,
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[0]
+                        }
+                      },
+                      title: {
+                        text: 'PFltSig_pDeltaPfilDifRefB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[0]
+                        }
+                      },
+                      opposite: true
+                    },
+                    {
+                      // Secondary yAxis
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_pPfilDifRefB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[1]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[1]
+                        }
+                      },
+                      opposite: true
+                    },
+
+                    {
+                      // Tertiary yAxis
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_pPfilDifFildB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[2]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[2]
+                        }
+                      },
+                      opposite: true
+                    },
+                    {
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_pDeltaPfilDifFildB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[3]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[3]
+                        }
+                      },
+                      // opposite: true
+                    },
+                    {
+                      gridLineWidth: 0,
+                      title: {
+                        text: 'PFltSig_ratPCorrlnSnsrHslnCnctnB1',
+                        style: {
+                          color: Highcharts.getOptions().colors[4]
+                        }
+                      },
+                      labels: {
+                        // format: '{value} km',
+                        style: {
+                          color: Highcharts.getOptions().colors[4]
+                        }
+                      },
+                      // opposite: true
+                    }
+                  ],
+
+                  tooltip: {
+                    shared: true
+                  },
+                  legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    x: 150,
+                    verticalAlign: 'top',
+                    y: 0,
+                    floating: true,
+                    backgroundColor:
+                      (Highcharts.theme && Highcharts.theme.legendBackgroundColor) ||
+                      '#FFFFFF'
+                  },
+                  series: [
+                    {
+                      id:'PFltSig_pDeltaPfilDifRefB1',
+                      name: 'PFltSig_pDeltaPfilDifRefB1',
+                      // type: 'spline',
+                      yAxis: 0,
+                      data:dataObj['PFltSig_pDeltaPfilDifRefB1'],
+                      
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      },
+                      pointStart: 1
+                    },
+                    {
+                      id:'PFltSig_pPfilDifRefB1',
+                      name: 'PFltSig_pPfilDifRefB1',
+                      // type: 'line',
+                      yAxis: 1,
+                      data:dataObj['PFltSig_pPfilDifRefB1'],
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    },
+                    {
+                      id:'PFltSig_pPfilDifFildB1',
+                      name: 'PFltSig_pPfilDifFildB1',
+                      // type: 'spline',
+                      yAxis: 2,
+                      data:dataObj['PFltSig_pPfilDifFildB1'],
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    },
+                    {
+                      id:'PFltSig_pDeltaPfilDifFildB1',
+                      name: 'PFltSig_pDeltaPfilDifFildB1',
+                      // type: 'spline',
+                      yAxis: 3,
+                      data: dataObj['PFltSig_pDeltaPfilDifFildB1'],
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    },
+                    {
+                      id:'PFltSig_ratPCorrlnSnsrHslnCnctnB1',
+                      name: 'PFltSig_ratPCorrlnSnsrHslnCnctnB1',
+                      // type: 'spline',
+                      yAxis: 4,
+                      data:dataObj['PFltSig_ratPCorrlnSnsrHslnCnctnB1'],
+                      marker: {
+                        enabled: false
+                      },
+                      //dashStyle: 'shortdot',
+                      tooltip: {
+                        // valueSuffix: ' km'
+                      }
+                    }
+                  ]
+                })
+
+                charts2 = Highcharts.chart('tin_calibration2', {
+                  chart: {
+                    zoomType: 'x',
+                    panning: true,
+			              panKey: 'shift'
+                  },
+                  boost: {
+                    useGPUTranslations: true
+                  },
+                  title: {
+                    text: 'PFltSig_vfEgPfilCorrdFildB1'
+                  },
+                  credits: {
+                  enabled: false
+                },
+                  subtitle: {
+                    text: 'PFltSig_vfEgPfilCorrdFildB1'
+                  },
+
+
+                  yAxis: [{
+                    title: {
+                      text: 'PFltSig_vfEgPfilCorrdFildB1'
+                    }
+                  }],
+                  legend: {
+                    layout: 'vertical',
+                    align: 'left',
+                    verticalAlign: 'top',
+                    floating: true
+
+                  },
+                  plotOptions: {
+                    series: {
+                      label: {
+                        connectorAllowed: false
+                      },
+                      pointStart: 1
+                    }
+                  },
+                  tooltip: {
+                    // valueSuffix: ' km'
+      },
+                  series: [
+                    {
+                      id:'PFltSig_vfEgPfilCorrdFildB1',
+                      name: 'PFltSig_vfEgPfilCorrdFildB1',
+                      data: dataObj['PFltSig_vfEgPfilCorrdFildB1'],
+                      pointStart: 1
+                    }
+                  ],
+                  responsive: {
+                    rules: [
+                      {
+                        condition: {
+                          maxWidth: 500
+                        },
+                        chartOptions: {
+                          legend: {
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom'
+                          }
+                        }
+                      }
+                    ]
+                  }
+                })
+            
+                
+                $('#simulation').attr("disabled",false);
+                $('#simulation').val("simulation");
+            }, 500);
+             
+
+      // // 一秒后继续调用本函数
+      // setTimeout(requestData, 1000);
+                
+      $('#simulation').attr("disabled",false);
+                 
+                 
+                }
+             
+              
+              },
+              complete: function (XMLHttpRequest, status) { //当请求完成时调用函数
+        if (status == 'timeout') {//status == 'timeout'意为超时,status的可能取值：success,notmodified,nocontent,error,timeout,abort,parsererror 
+        simulationRequest.abort(); //取消请求
+          // Modal.warning({     
+          //   title: '友情提示',
+          //   content: '网络不稳定',
+          // });
+          alert('网络不稳定');
+        }
+      }
+
+            })
+          
+            
+ 
+          })
+             
+             
+             
+              $('#slector_yrange').change(function(){
+                if($('#slector_yrange').val()==="PFltSig_pDeltaPfilDifRefB1"){
+                  yrangeData=0;
+              }
+                if($('#slector_yrange').val()==="PFltSig_pPfilDifRefB1"){
+                  yrangeData=1;
+              }
+                if($('#slector_yrange').val()==="PFltSig_pPfilDifFildB1"){
+                  yrangeData=2;
+              }
+                if($('#slector_yrange').val()==="PFltSig_pDeltaPfilDifFildB1"){
+                  yrangeData=3;
+              }
+                if($('#slector_yrange').val()==="PFltSig_ratPCorrlnSnsrHslnCnctnB1"){
+                  yrangeData=4;
+              }
+                if($('#slector_yrange').val()==="PFltSig_vfEgPfilCorrdFildB1"){
+                  yrangeData=5;
+              }
+              console.log(yrangeData);
+              })
+
+
+
+
+                 $('#yrange')
+            .button()
+            .click(function() {
+              console.log(yrangeData);
+              var min = $('#yrange_min').val()
+              var max = $('#yrange_max').val()
+              // var selectedItem = $('#slector_curve').val();//用selector_curve做演示
+
+              console.log($('#yrange_max').val())
+              // for (i = 0; i < Highcharts.charts.length; i = i + 1) {
+              //   chart = Highcharts.charts[i]
+              //   chart.yAxis[0].update({
+              //     max: max,
+              //     min: min
+              //   })
+              // }
+              console.log(charts.yAxis);
+             if(yrangeData==5){
+              charts2.yAxis[yrangeData-5].update({
+                  max: max,
+                  min: min
+                })
+             }else{
+             charts.yAxis[yrangeData].update({
+                  max: max,
+                  min: min
+                })
+              charts.yAxis[yrangeData].update({
+                  max: max,
+                  min: min
+                })
+              charts.yAxis[yrangeData].update({
+                  max: max,
+                  min: min
+                })
+              charts.yAxis[yrangeData].update({
+                  max: max,
+                  min: min
+                })
+              charts.yAxis[yrangeData].update({
+                  max: max,
+                  min: min
+                })
+             }
+              
+              
+            })
+                $('#slector_signal').change(function() {
+            var selectedItem = $('#slector_signal').val()
+            if (selectedItem == 'PFltSig_vfEgPfilCorrdFildB1') {
+
+              // chart.series[0].setData(curve1[0]['data']);//将表格数据发送给绘图，并重新绘图！！！
+              $('#tin_calibration2').show();
+              $('#tin_calibration').hide();
+
+              //  chart.redraw();
+
+            }
+            if (
+              selectedItem == 'PFltSig_data'
+            ) {
+
+              $('#tin_calibration').show();
+              $('#tin_calibration2').hide();
+              // chart.series[0].setData(curve1[0]['data']);//将表格数据发送给绘图，并重新绘图！！！
+              // chart.redraw();
+
+            }
+
+          })
+
+           
+         
+              })
+    </script>
+    <script>
+   
+
+
+</script>
+<script>
+
+ $("#i-file-dcm").change(function(){
+   var name;
+   if(this.files[4]){
+     alert("最多上传4个dcm文件！");
+     return;
+     
+   }
+   if(this.files[0]){
+    var file = this.files[0];
+     name=file.name;
+   }
+   if(this.files[1]){
+    var file2 = this.files[0];
+     name=name+";"+file2.name;
+   }
+   if(this.files[2]){
+    var file3 = this.files[0];
+    name=name+";"+file3.name;
+   }
+   if(this.files[3]){
+    var file4 = this.files[0];
+    name=name+";"+file4.name;
+   }
+     
+     $('#location2').val(name);
+    
+   
+ });
+
+
+     
+ 
+ 
+ $("#i-file").change(function(){
+     var file = this.files[0];
+     $('#location').val(file.name);
+     
+ });
+
+         
+
+          
+
+</script>
+<script>
+  $('#submitdat').click(function(){
+    $('#submitdat').attr("disabled","disabled");
+    $('#submitdat').val("正在上传...");
+    var formData=new FormData($('#selectdat')[0])
+    
+    $.ajax({
+      type: 'post',
+                url: "upload/dat",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+    }).success(function(){
+
+     
+      $('#submitdat').attr("disabled",false);
+      $('#submitdat').val("提交");
+      alert("提交dat文件成功!");
+    })
+  })
+  $('#submitdcm').click(function(){
+   
+  var formData = new FormData($('#selectPro')[0]);
+            $.ajax({
+                type: 'post',
+                url: "upload/dcm",
+                data: formData,
+                cache: false,
+                processData: false,
+                contentType: false,
+            }).success(function (data) {
+                console.log(data);
+                var DCMdatas=data['calis'];
+                console.log(typeof(DCMdatas));
+                
+  
+ console.log(DCMdatas);
+ 
+//  console.log(typeof(DCMdatas));
+
+
+  console.log(DCMdatas['PFltSig_stHaltCrssCorrlnB1_C']);
+ $('#PFltSig_vfEgPfilFildMinB1_C').val(DCMdatas.PFltSig_vfEgPfilFildMinB1_C)
+ $('#PFltSig_vfEgPfilFildMaxB1_C').val(DCMdatas.PFltSig_vfEgPfilFildMaxB1_C)
+ $('#PFltSig_tiNormMin_C').val(DCMdatas.PFltSig_tiNormMin_C)
+           $('#PFltSig_dvfEgPfilFildMinB1_C').val(DCMdatas.PFltSig_dvfEgPfilFildMinB1_C)
+           $('#PFltSig_dvfEgPfilFildMaxB1_C').val(DCMdatas.PFltSig_dvfEgPfilFildMaxB1_C),
+           $('#PFltSig_dmSotOxdMax_C').val(DCMdatas.PFltSig_dmSotOxdMax_C),
+           $('#PPfilDif_ratPCorrlnThdDual_C').val(DCMdatas. PPfilDif_ratPCorrlnThdDual_C),
+           $('#PFltSig_ratPCorrlnMinDiag_C').val(DCMdatas.PFltSig_ratPCorrlnMinDiag_C),
+           $('#PFltSig_numPCorrlnAvrgDiag_C').val(DCMdatas.PFltSig_numPCorrlnAvrgDiag_C),
+           $('#PFltSig_numPCorrlnAvrg_C').val(DCMdatas.PFltSig_numPCorrlnAvrg_C),
+           $('#PFltSig_facPDeltaPfilRefCorrB1_C').val(DCMdatas.PFltSig_facPDeltaPfilRefCorrB1_C),
+           $('#PFltSig_tiFilPDifB1_C').val(DCMdatas.PFltSig_tiFilPDifB1_C ),
+           $('#PFltSig_tiFilVfB1_C').val(DCMdatas.PFltSig_tiFilVfB1_C),
+           $('#PFltSig_stRstCrssCorrlnB1_C').val(DCMdatas.PFltSig_stRstCrssCorrlnB1_C),
+           $('#tiEfcDurnMin_C').val(DCMdatas['PFltSig_StMacPBasdB1.tiEfcDurnMin_C']),
+           $('#PFltSig_stHaltCrssCorrlnB1_C').val(DCMdatas.PFltSig_stHaltCrssCorrlnB1_C)
+          var tabledata=DCMdatas.PFltSig_rFlowPfilRefB1_T;
+          var tabledata2=DCMdatas.PFltSig_ratRFlowEgB1_T
+                  
+          console.log(tabledata);
+          console.log(tabledata2);
+          
+          $(function() {
+    $('#tblAppendGrid_c1').appendGrid({
+      caption: 'curve1',
+            // captionTooltip
+            captionTooltip: {
+              items: 'td',
+              content: 'curve1',
+              show: {
+                effect: 'fold',
+                delay: 200
+              }
+            },
+        columns: [
+            { name: 'x', display: 'x' },
+            { name: 'y', display: 'y' },
+            
+        ],
+        initData: [
+        {
+                  x: tabledata['x'][0],
+                  y: tabledata['z'][0]
+                },
+                {
+                  x: tabledata['x'][1],
+                  y: tabledata['z'][1]
+                },
+                {
+                  x: tabledata['x'][2],
+                  y: tabledata['z'][2]
+                },
+                {
+                  x: tabledata['x'][3],
+                  y:tabledata['z'][3]
+                },
+                {
+                  x: tabledata['x'][4],
+                  y: tabledata['z'][4]
+                },
+                {
+                  x: tabledata['x'][5],
+                  y: tabledata['z'][5]
+                },
+                {
+                  x: tabledata['x'][6],
+                  y:tabledata['z'][6]
+                },
+                {
+                  x: tabledata['x'][7],
+                  y: tabledata['z'][7]
+                },
+                {
+                  x: tabledata['x'][8],
+                  y:tabledata['z'][8]
+                },
+                {
+                  x: tabledata['x'][9],
+                  y: tabledata['z'][9]
+                },
+                {
+                  x: tabledata['x'][10],
+                  y: tabledata['z'][10]
+                }
+        ]
+    });
+
+    $('#tblAppendGrid_c2').appendGrid({
+      caption: 'curve2',
+            // captionTooltip
+            captionTooltip: {
+              items: 'td',
+              content: 'curve2',
+              show: {
+                effect: 'fold',
+                delay: 200
+              }
+            },
+        columns: [
+            { name: 'x', display: 'x' },
+            { name: 'y', display: 'y' },
+            
+        ],
+        initData: [
+        {
+                  x: tabledata2['x'][0],
+                  y: tabledata2['z'][0]
+                },
+                {
+                  x: tabledata2['x'][1],
+                  y: tabledata2['z'][1]
+                },
+                {
+                  x: tabledata2['x'][2],
+                  y: tabledata2['z'][2]
+                },
+                {
+                  x: tabledata2['x'][3],
+                  y:tabledata2['z'][3]
+                },
+                {
+                  x: tabledata2['x'][4],
+                  y: tabledata2['z'][4]
+                },
+                {
+                  x: tabledata2['x'][5],
+                  y: tabledata2['z'][5]
+                },
+                {
+                  x: tabledata2['x'][6],
+                  y:tabledata2['z'][6]
+                },
+                {
+                  x: tabledata2['x'][7],
+                  y: tabledata2['z'][7]
+                },
+                {
+                  x: tabledata2['x'][8],
+                  y:tabledata2['z'][8]
+                },
+                {
+                  x: tabledata2['x'][9],
+                  y: tabledata2['z'][9]
+                },
+                {
+                  x: tabledata2['x'][10],
+                  y: tabledata2['z'][10]
+                }
+        ]
+    });
+
+
+});
+        
+              
+
+          
+          
+            
+         
+             
+             
+ 
+  
+  
+            }).error(function () {
+                alert("上传失败");
+            });
+
+
+
+  })
+
+
+
+  
+   
+
+
+
+
+</script>
+  </body>
+</html>
